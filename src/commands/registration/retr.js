@@ -12,6 +12,15 @@ module.exports = {
     .tap(() => this.commandSocket.pause())
     .then(() => Promise.try(() => this.fs.read(filePath, {start: this.restByteCount})))
     .then((fsResponse) => {
+      if(fsResponse === "none"){
+        return this.reply(550,"That file does not exist")
+      }
+      else if(fsResponse === "WAITFOR_AVSCAN"){
+        return this.reply(550,"That file has not been scanned yet")
+      }
+      else if(fsResponse === "MALICIOUS"){
+        return this.reply(550,"Virus detected in this file")
+      }
       let {stream, clientPath} = fsResponse;
       if (!stream && !clientPath) {
         stream = fsResponse;

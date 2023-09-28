@@ -7,8 +7,20 @@ module.exports = {
     if (!this.fs.delete) return this.reply(402, 'Not supported by file system');
 
     return Promise.try(() => this.fs.delete(command.arg))
-    .then(() => {
-      return this.reply(250);
+    .then((res) => {
+      if(res === true){
+        return this.reply(250);
+      }
+      else if(res === "WAITFOR_AVSCAN"){
+        return this.reply(550,"That file has not been scanned yet")
+      }
+      else if(res === "rm-root"){
+        return this.reply(550,"Cannot remove root directory")
+      }
+      else{
+        return this.reply(550,"That file does not exist")
+      }
+      
     })
     .catch((err) => {
       log.error(err);

@@ -1,6 +1,7 @@
 module.exports = {
   directive: 'ABOR',
   handler: function () {
+    console.log("aborted")
     return this.connector.waitForConnection()
     .then((socket) => {
       return this.reply(426, {socket})

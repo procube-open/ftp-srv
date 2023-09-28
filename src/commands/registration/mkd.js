@@ -10,7 +10,11 @@ module.exports = {
     return Promise.try(() => this.fs.mkdir(command.arg, { recursive: true }))
     .then((dir) => {
       const path = dir ? `"${escapePath(dir)}"` : undefined;
-      return this.reply(257, path);
+      if(dir === "exist-file") return this.reply(550, "The file that has same name already exists")
+      else if(dir === "exist-dir") return this.reply(550, "The directory that has same name already exists")
+      else if(dir === "not-exist-parent") return this.reply(550, "Parent directory does not exist")
+      else if(dir === "dot-name") return this.reply(550, "This name cannot be used as a directory name")
+      else return this.reply(257, path);
     })
     .catch((err) => {
       log.error(err);

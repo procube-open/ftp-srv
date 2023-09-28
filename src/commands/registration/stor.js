@@ -13,6 +13,10 @@ module.exports = {
     .tap(() => this.commandSocket.pause())
     .then(() => Promise.try(() => this.fs.write(fileName, {append, start: this.restByteCount})))
     .then((fsResponse) => {
+      if(fsResponse === "already-exist-dir") return this.reply(550, "The directory that has same name already exists");
+      if(fsResponse === "not-exist-dir") return this.reply(550, "That directory does not exist");
+      if(fsResponse === "dot-name") return this.reply(550, "This name cannot be used as a file name");
+      if(fsResponse === "upload-root") return this.reply(550, "Cannot rewrite root directory");
       let {stream, clientPath} = fsResponse;
       if (!stream && !clientPath) {
         stream = fsResponse;
@@ -32,7 +36,10 @@ module.exports = {
       };
 
       const streamPromise = new Promise((resolve, reject) => {
-        stream.once('error', destroyConnection(this.connector.socket, reject));
+        stream.once('error', (error) => {
+          destroyConnection(this.connector.socket, reject)
+          reject(error)
+        });
         stream.once('finish', () => resolve());
       });
 
@@ -43,7 +50,10 @@ module.exports = {
           else stream.end();
           resolve();
         });
-        this.connector.socket.once('error', destroyConnection(stream, reject));
+        this.connector.socket.once('error', (error) => {
+          destroyConnection(this.connector.socket, reject)
+          reject(error)
+        });
       });
 
       this.restByteCount = 0;

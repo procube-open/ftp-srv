@@ -17,13 +17,16 @@ module.exports = {
     return this.connector.waitForConnection()
     .tap(() => this.commandSocket.pause())
     .then(() => Promise.try(() => this.fs.get(path)))
-    .then((stat) => stat.isDirectory() ? Promise.try(() => this.fs.list(path)) : [stat])
-    .then((files) => {
+    .then((stat) => {
+      if(!Object.keys(stat).length) return []
+      if(stat.isDirectory()) return Promise.try(() => this.fs.list(path)) 
+      else return [stat]
+    }).then((files) => {
+      files = files.filter(v => v)
       const getFileMessage = (file) => {
         if (simple) return file.name;
         return getFileStat(file, _.get(this, 'server.options.file_format', 'ls'));
       };
-
       return Promise.try(() => files.map((file) => {
         const message = getFileMessage(file);
         return {

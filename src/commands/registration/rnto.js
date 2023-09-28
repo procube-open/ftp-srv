@@ -12,8 +12,29 @@ module.exports = {
     const to = command.arg;
 
     return Promise.try(() => this.fs.rename(from, to))
-    .then(() => {
-      return this.reply(250);
+    .then((renameCheck) => {
+      if(renameCheck === true){return this.reply(250);}
+      else if(renameCheck === "not-found"){
+        return this.reply(550,"RNFR file cannot find");
+      }
+      else if (renameCheck === "already-exist"){
+        return this.reply(550,"RNTO file already exist")
+      }
+      else if (renameCheck === "include-slash"){
+        return this.reply(550,"File or directory names cannot include slash")
+      }
+      else if (renameCheck === "rename-root"){
+        return this.reply(550,"Cannot rename root directory")
+      }
+      else if (renameCheck === "dot-name"){
+        return this.reply(550,"This name cannot be used as a file (or directory) name")
+      }
+      else if(renameCheck === "WAITFOR_AVSCAN"){
+        return this.reply(550,"This file has not been scanned yet")
+      }
+      else{
+        return this.reply(550,"Internal server error")
+      }
     })
     .tap(() => this.emit('RNTO', null, to))
     .catch((err) => {
