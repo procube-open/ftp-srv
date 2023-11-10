@@ -32,6 +32,9 @@ module.exports = {
       else if(renameCheck === "WAITFOR_AVSCAN"){
         return this.reply(550,"This file has not been scanned yet")
       }
+      else if(renameCheck === "permission-denied"){
+        return this.reply(550,"Permission denied")
+      }
       else{
         return this.reply(550,"Internal server error")
       }

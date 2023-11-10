@@ -9,6 +9,7 @@ module.exports = {
 
     return Promise.try(() => this.fs.get(command.arg))
     .then((fileStat) => {
+      if (fileStat === "permission-denied") return this.reply(550, "Permission denied")
       const modificationTime = moment.utc(fileStat.mtime).format('YYYYMMDDHHmmss.SSS');
       return this.reply(213, modificationTime);
     })

@@ -17,6 +17,9 @@ module.exports = {
       else if(res === "rm-root"){
         return this.reply(550,"Cannot remove root directory")
       }
+      else if(res === "permission-denied"){
+        return this.reply(550,"Permission denied")
+      }
       else{
         return this.reply(550,"That file does not exist")
       }

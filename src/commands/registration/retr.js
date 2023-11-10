@@ -21,6 +21,9 @@ module.exports = {
       else if(fsResponse === "MALICIOUS"){
         return this.reply(550,"Virus detected in this file")
       }
+      else if(fsResponse === "permission-denied"){
+        return this.reply(550,"Permission denied")
+      }
       let {stream, clientPath} = fsResponse;
       if (!stream && !clientPath) {
         stream = fsResponse;

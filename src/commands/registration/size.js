@@ -8,6 +8,7 @@ module.exports = {
 
     return Promise.try(() => this.fs.get(command.arg))
     .then((fileStat) => {
+      if (fileStat === "permission-denied") return this.reply(550, "Permission denied")
       return this.reply(213, {message: fileStat.size});
     })
     .catch((err) => {

@@ -14,6 +14,7 @@ module.exports = {
       else if(dir === "exist-dir") return this.reply(550, "The directory that has same name already exists")
       else if(dir === "not-exist-parent") return this.reply(550, "Parent directory does not exist")
       else if(dir === "dot-name") return this.reply(550, "This name cannot be used as a directory name")
+      else if(dir === "permission-denied") return this.reply(550, "Permission denied")
       else return this.reply(257, path);
     })
     .catch((err) => {

@@ -10,6 +10,7 @@ module.exports = {
     .then((res) => {
       if (res === "not-found") return this.reply(550,"That directory does not exist")
       else if (res === "rm-root") return this.reply(550,"Cannot remove root directory")
+      else if (res === "permission-denied") return this.reply(550,"Permission denied")
       else return this.reply(250);
     })
     .catch((err) => {
