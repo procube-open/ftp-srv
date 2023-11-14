@@ -10,6 +10,7 @@ module.exports = {
     return Promise.try(() => this.fs.chdir(command.arg))
     .then((cwd) => {
       if(cwd === "not-exist") return this.reply(550, "That directory does not exist")
+      else if(cwd === "permission-denied") return this.reply(550, "Permission denied")
       const path = cwd ? `"${escapePath(cwd)}"` : undefined;
       return this.reply(250, path);
     })

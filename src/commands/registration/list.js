@@ -13,15 +13,24 @@ module.exports = {
 
     const simple = command.directive === 'NLST';
 
+    class PermissionDeniedException extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "PermissionDeniedException";
+      }
+    }
+
     const path = command.arg || '.';
     return this.connector.waitForConnection()
     .tap(() => this.commandSocket.pause())
     .then(() => Promise.try(() => this.fs.get(path)))
     .then((stat) => {
+      if(stat === "permission-denied") return "permission-denied"
       if(!Object.keys(stat).length) return []
       if(stat.isDirectory()) return Promise.try(() => this.fs.list(path)) 
       else return [stat]
     }).then((files) => {
+      if(files === "permission-denied") throw new PermissionDeniedException("Permission denied")
       files = files.filter(v => v)
       const getFileMessage = (file) => {
         if (simple) return file.name;
@@ -45,6 +54,9 @@ module.exports = {
     .catch(Promise.TimeoutError, (err) => {
       log.error(err);
       return this.reply(425, 'No connection established');
+    })
+    .catch(PermissionDeniedException, (err) => {
+      return this.reply(550, err.message || "Permission denied");
     })
     .catch((err) => {
       log.error(err);

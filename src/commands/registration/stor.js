@@ -17,6 +17,7 @@ module.exports = {
       if(fsResponse === "not-exist-dir") return this.reply(550, "That directory does not exist");
       if(fsResponse === "dot-name") return this.reply(550, "This name cannot be used as a file name");
       if(fsResponse === "upload-root") return this.reply(550, "Cannot rewrite root directory");
+      if(fsResponse === "permission-denied") return this.reply(550, "Permission denied");
       let {stream, clientPath} = fsResponse;
       if (!stream && !clientPath) {
         stream = fsResponse;
