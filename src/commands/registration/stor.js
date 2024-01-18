@@ -1,4 +1,5 @@
 const Promise = require('bluebird');
+const { pipeline } = require('node:stream');
 
 module.exports = {
   directive: 'STOR',
@@ -18,7 +19,8 @@ module.exports = {
       if(fsResponse === "dot-name") return this.reply(550, "This name cannot be used as a file name");
       if(fsResponse === "upload-root") return this.reply(550, "Cannot rewrite root directory");
       if(fsResponse === "permission-denied") return this.reply(550, "Permission denied");
-      let {stream, clientPath} = fsResponse;
+      let {stream, clientPath, ws} = fsResponse;
+      if (!ws) return this.reply(550, "Cannot access the WriteStream");
       if (!stream && !clientPath) {
         stream = fsResponse;
         clientPath = fileName;
@@ -36,31 +38,25 @@ module.exports = {
         }
       };
 
-      const streamPromise = new Promise((resolve, reject) => {
-        stream.once('error', (error) => {
-          destroyConnection(this.connector.socket, reject)
-          reject(error)
-        });
-        stream.once('finish', () => resolve());
-      });
-
       const socketPromise = new Promise((resolve, reject) => {
-        this.connector.socket.pipe(stream, {end: false});
-        this.connector.socket.once('end', () => {
-          if (stream.listenerCount('close')) stream.emit('close');
-          else stream.end();
-          resolve();
-        });
-        this.connector.socket.once('error', (error) => {
-          destroyConnection(this.connector.socket, reject)
-          reject(error)
-        });
+        pipeline(
+          this.connector.socket,
+          stream,
+          ws,
+          (error) => {
+            if (error) {
+              destroyConnection(this.connector.socket, reject)(error)
+            } else {
+              resolve();
+            }
+          },
+        )
       });
 
       this.restByteCount = 0;
 
       return this.reply(150).then(() => this.connector.socket && this.connector.socket.resume())
-      .then(() => Promise.all([streamPromise, socketPromise]))
+      .then(() => Promise.all([socketPromise]))
       .tap(() => this.emit('STOR', null, serverPath))
       .then(() => this.reply(226, clientPath))
       .then(() => stream.destroy && stream.destroy());
@@ -70,9 +66,15 @@ module.exports = {
       return this.reply(425, 'No connection established');
     })
     .catch((err) => {
-      log.error(err);
+      let message = null;
+      if (typeof err === 'string' || err instanceof String) {
+        message = err.toString();
+        log.info(err);
+      } else {
+        log.error(err);
+      }
       this.emit('STOR', err);
-      return this.reply(550, err.message);
+      return this.reply(550, err.message || message);
     })
     .then(() => {
       this.connector.end();
