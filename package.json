@@ -1,6 +1,6 @@
 {
   "name": "@procube/ftp-srv",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "Modern, extensible FTP Server",
   "files": [
     "src",

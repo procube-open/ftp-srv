@@ -1,5 +1,11 @@
 # @procube/ftp-srv
 
+## 1.0.0-rc.2
+
+### Patch Changes
+
+- fix set default
+
 ## 1.0.0-rc.1
 
 ### Patch Changes
