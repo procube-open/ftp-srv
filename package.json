@@ -1,17 +1,7 @@
 {
-  "name": "ftp-srv",
-  "version": "0.0.0",
+  "name": "@procube/ftp-srv",
+  "version": "1.0.0",
   "description": "Modern, extensible FTP Server",
-  "keywords": [
-    "ftp",
-    "ftp-server",
-    "ftp-srv",
-    "ftp-svr",
-    "ftpd",
-    "ftpserver",
-    "server"
-  ],
-  "license": "MIT",
   "files": [
     "src",
     "bin",
@@ -20,28 +10,6 @@
   "main": "ftp-srv.js",
   "bin": "./bin/index.js",
   "types": "./ftp-srv.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/autovance/ftp-srv"
-  },
-  "scripts": {
-    "pre-release": "npm run verify",
-    "test": "mocha test/*/*/*.spec.js test/*/*.spec.js test/*.spec.js",
-    "verify": "eslint src/**/*.js test/**/*.js bin/**/*.js"
-  },
-  "release": {
-    "verifyConditions": "condition-circle",
-    "branch": "main",
-    "branches": [
-      "main"
-    ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
   "lint-staged": {
     "*.js": [
       "eslint --fix"
@@ -74,9 +42,11 @@
     "yargs": "^15.4.1"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.8",
     "@commitlint/cli": "^10.0.0",
     "@commitlint/config-conventional": "^16.2.1",
     "@icetee/ftp": "^1.0.2",
+    "@procube/cs-tools": "^1.0.8",
     "chai": "^4.2.0",
     "condition-circle": "^2.0.2",
     "eslint": "^5.14.1",
