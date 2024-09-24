@@ -10,6 +10,10 @@
   "main": "ftp-srv.js",
   "bin": "./bin/index.js",
   "types": "./ftp-srv.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/procube-open/ftp-srv.git"
+  },
   "lint-staged": {
     "*.js": [
       "eslint --fix"
