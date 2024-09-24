@@ -42,7 +42,7 @@ jobs:
           echo "@${GITHUB_REPOSITORY_OWNER}:registry=https://npm.pkg.github.com" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NPM_AUTH_TOKEN}" >> .npmrc
           yarn install --immutable --immutable-cache --check-cache
-          yarn publish
+          yarn publish --access public
         env:
           NPM_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Add Tag
