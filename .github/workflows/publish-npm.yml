@@ -39,7 +39,7 @@ jobs:
       - name: Publish npm package
         if: ${{steps.check-in-pre.outputs.pre == 1 }}
         run: |
-          echo "@procube:registry=https://npm.pkg.github.com" >> .npmrc
+          echo "@${GITHUB_REPOSITORY_OWNER}:registry=https://npm.pkg.github.com" >> .npmrc
           echo "//npm.pkg.github.com/:_authToken=${NPM_AUTH_TOKEN}" >> .npmrc
           yarn install --immutable --immutable-cache --check-cache
           yarn publish
