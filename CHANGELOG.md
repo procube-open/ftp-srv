@@ -1,5 +1,11 @@
 # @procube/ftp-srv
 
+## 1.0.1-rc.0
+
+### Patch Changes
+
+- export ftpErrors
+
 ## 1.0.0
 
 ### Major Changes

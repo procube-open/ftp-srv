@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "rc",
+  "initialVersions": {
+    "@procube-open/ftp-srv": "1.0.0"
+  },
+  "changesets": [
+    "slow-ducks-chew"
+  ]
+}
